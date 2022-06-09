@@ -1,6 +1,6 @@
 const User = require("../models/User");
 const { NotFoundError, BadRequestError, UnauthenticatedError } = require("../errors");
-const { specificUserData } = require("../utils");
+const { specificUserData, createJWT } = require("../utils");
 const checkPermissions = require("../utils/check-permissions");
 
 const getAllUsers = async (req, res) => {
@@ -57,8 +57,11 @@ const updateUser = async (req, res) => {
     const userDataForResponse = specificUserData(user);
     
     // attachCookiesToResponse(userDataForResponse, res);
+
+    const token = createJWT(userDataForResponse);
     
     res.status(200).json({
+        token,
         user: userDataForResponse,
         message: 'User updated successfully'
     });

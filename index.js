@@ -32,7 +32,7 @@ app.use(cors({
 
 // using this middleware now we can access the cookies with req.cookies
 // if we use the signed flag we access the cookies with req.signedCookies
-app.use(cookieParser(process.env.JWT_SECRET));
+// app.use(cookieParser(process.env.JWT_SECRET));
 
 app.get('/', (req, res) => {
     res.status(200).send('Welcome to the e-commerce-api');
