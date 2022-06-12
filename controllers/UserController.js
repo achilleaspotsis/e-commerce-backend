@@ -67,7 +67,7 @@ const updateUser = async (req, res) => {
     });
 };
 
-const updateUserPassword = async (req, res) => {
+const updatePassword = async (req, res) => {
     if (!req.body.oldPassword || !req.body.newPassword) {
         throw new BadRequestError('Both fields are required');
     }
@@ -92,5 +92,5 @@ module.exports = {
     getSingleUser,
     showCurrentUser,
     updateUser,
-    updateUserPassword
+    updatePassword
 }

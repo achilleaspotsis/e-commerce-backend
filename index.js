@@ -14,6 +14,7 @@ const connectDB = require('./database/connect');
 // routes
 const authRoutes = require('./routes/auth');
 const usersRoutes = require('./routes/users');
+const productRoutes = require('./routes/products');
 // middlewares
 const notFoundMiddleware = require('./middlewares/not-found');
 const errorHandlerMiddleware = require('./middlewares/error-handler');
@@ -41,9 +42,11 @@ app.get('/', (req, res) => {
 app.use('/api/v1/auth', authRoutes);
 
 // middleware that require from every route now on to be authenticated
-app.use(authenticateUser);
+// app.use(authenticateUser);
 
-app.use('/api/v1/users', usersRoutes);
+app.use('/api/v1/users', authenticateUser, usersRoutes);
+
+app.use('/api/v1/products', productRoutes);
 
 // custom middlewares
 app.use(notFoundMiddleware);
