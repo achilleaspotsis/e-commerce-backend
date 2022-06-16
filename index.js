@@ -4,9 +4,12 @@ require('express-async-errors');
 // express
 const express = require('express');
 const app = express();
+const fileUpload = require('express-fileupload'); 
 // rest of the packages
-const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
+const morgan = require('morgan');
+
+// security packages
 const cors = require('cors');
 
 // database
@@ -21,8 +24,12 @@ const errorHandlerMiddleware = require('./middlewares/error-handler');
 const { authenticateUser } = require('./middlewares/auth');
 
 // basic-middlewares
-app.use(morgan('tiny'));
+app.use(express.static('./public'));
 app.use(express.json());
+app.use(fileUpload({
+    limits: { fileSize: 1 * 1024 * 1024 }
+}));
+app.use(morgan('tiny'));
 
 // security-middlewares
 app.use(cors({
@@ -30,6 +37,7 @@ app.use(cors({
     // allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true
 }));
+
 
 // using this middleware now we can access the cookies with req.cookies
 // if we use the signed flag we access the cookies with req.signedCookies

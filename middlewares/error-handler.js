@@ -10,6 +10,19 @@ const errorHandlerMiddleware = async (err, req, res, next) => {
     }
 
     if (err.name === 'ValidationError') {
+        // for (let i = 0; i < err.errors.length; i++) {
+        //     console.log(err.errors[i]);
+        //     if (err.errors[i].kind === 'required') {
+        //         customError.message = Object.values(err.errors).map(field => `${field.path} field is required`);
+        //     } else {
+        //         customError.message = Object.values(err.errors).map(field => field.message);
+        //     }
+        // }
+        // if ((Object.values(err.errors)).kind === 'required') {
+        //     customError.message = Object.values(err.errors).map(field => `${field.path} field is required`);
+        // } else {
+        //     customError.message = Object.values(err.errors).map(field => field.message);
+        // }
         customError.message = Object.values(err.errors).map(field => field.message);
         customError.statusCode = 400;
     }
@@ -19,7 +32,7 @@ const errorHandlerMiddleware = async (err, req, res, next) => {
         customError.statusCode = 404;
     }
 
-    console.log({error: customError.message});
+    console.log(err);
     return res.status(customError.statusCode).json({message: customError.message});
 };
 
