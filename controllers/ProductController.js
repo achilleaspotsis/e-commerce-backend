@@ -65,21 +65,26 @@ const deleteProduct = async (req, res) => {
 };
 
 const uploadImage = async (req, res) => {
-    if (!req.files) {
-        throw new BadRequestError('No file uploaded');
+    let sampleFile;
+    let uploadPath;
+
+    console.log(req.files);
+
+    if (!req.files || Object.keys(req.files).length === 0) {
+        throw new BadRequestError('No files were uploaded');
     }
 
-    const productImage = req.files.image;
+    sampleFile = req.files.image;
 
-    if (!productImage.mimetype.startsWith('image')) {
+    if (!sampleFile.mimetype.startsWith('image')) {
         throw new BadRequestError('Please upload image');
     }
 
-    const imagePath = path.join(__dirname, `../public/uploads/${productImage.name}`);
+    uploadPath = path.join(__dirname, `../public/uploads/${sampleFile.name}`);
 
-    await productImage.mv(imagePath);
+    await sampleFile.mv(uploadPath);
 
-    res.status(200).json({image: `/uploads/${productImage.name}`});
+    res.status(200).json({message: `Your file has been successfully uploaded on: /uploads/${sampleFile.name}`});
 };
 
 module.exports = {

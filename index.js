@@ -27,7 +27,9 @@ const { authenticateUser } = require('./middlewares/auth');
 app.use(express.static('./public'));
 app.use(express.json());
 app.use(fileUpload({
-    limits: { fileSize: 1 * 1024 * 1024 }
+    limits: { fileSize: 1 * 1024 * 1024 },
+    abortOnLimit: true,
+    responseOnLimit: 'Your file size exceeds the maximum limit'
 }));
 app.use(morgan('tiny'));
 
