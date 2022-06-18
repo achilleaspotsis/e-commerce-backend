@@ -34,22 +34,22 @@ const createReview = async (req, res) => {
 
 const getAllReviews = async (req, res) => {
     const reviews = await Review.find({})
-                                .populate([
-                                    {
-                                        path: 'product',
-                                        select: 'name company price'
-                                    },
-                                    {
-                                        path: 'user',
-                                        select: 'name'
-                                    }
-                                ]);
+        .populate([
+            {
+                path: 'product',
+                select: 'name company price'
+            },
+            {
+                path: 'user',
+                select: 'name'
+            }
+        ]);
 
     let hits = reviews.length;
     let responseMsg = 'Reviews fetched successfully';
 
     if (hits === 0) {
-        responseMsg = 'There are no reviews available yet';
+        responseMsg = 'There are no reviews yet';
     }
 
     res.status(200).json({
@@ -61,16 +61,16 @@ const getAllReviews = async (req, res) => {
 
 const getSingleReview = async (req, res) => {
     const review = await Review.findById(req.params.id)
-                                .populate([
-                                    {
-                                        path: 'product',
-                                        select: 'name company price'
-                                    },
-                                    {
-                                        path: 'user',
-                                        select: 'name'
-                                    }
-                                ]);
+        .populate([
+            {
+                path: 'product',
+                select: 'name company price'
+            },
+            {
+                path: 'user',
+                select: 'name'
+            }
+        ]);
 
     if (!review) {
         throw new NotFoundError(`We did not find any review with the specified value ${req.params.id}`);

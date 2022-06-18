@@ -62,8 +62,24 @@ const ProductSchema = new Schema(
         }
     },
     {
-        timestamps: true
+        timestamps: true,
+        toJSON: { virtuals: true },
+        toObject: { virtuals: true }
     }
 );
+
+ProductSchema.virtual('reviews', {
+    ref: 'Review',
+    localField: '_id',
+    foreignField: 'product',
+    justOne: false,
+    // match: {rating: 5}
+});
+
+// --> pre remove hook
+// we can access a different or the same model with this.model()
+ProductSchema.pre('remove', async function() {
+    await this.model('Review').deleteMany({product: this._id});
+});
 
 module.exports = model('Product', ProductSchema);

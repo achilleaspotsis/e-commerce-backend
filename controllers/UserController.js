@@ -9,7 +9,7 @@ const getAllUsers = async (req, res) => {
     let responseMsg = 'Users fetched successfully';
 
     if (hits === 0) {
-        responseMsg = 'There are no users available yet';
+        responseMsg = 'There are no users yet';
     }
 
     res.status(200).json({
