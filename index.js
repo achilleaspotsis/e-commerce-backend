@@ -1,10 +1,12 @@
 // Packeges
 require('dotenv').config();
 require('express-async-errors');
+
 // express
 const express = require('express');
 const app = express();
 const fileUpload = require('express-fileupload'); 
+
 // rest of the packages
 const cookieParser = require('cookie-parser');
 const morgan = require('morgan');
@@ -12,12 +14,17 @@ const morgan = require('morgan');
 // security packages
 const cors = require('cors');
 
+// --> end of packages
+
 // database
 const connectDB = require('./database/connect');
+
 // routes
 const authRoutes = require('./routes/auth');
 const usersRoutes = require('./routes/users');
 const productRoutes = require('./routes/products');
+const reviewsRoutes = require('./routes/reviews');
+
 // middlewares
 const notFoundMiddleware = require('./middlewares/not-found');
 const errorHandlerMiddleware = require('./middlewares/error-handler');
@@ -57,6 +64,8 @@ app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/users', authenticateUser, usersRoutes);
 
 app.use('/api/v1/products', productRoutes);
+
+app.use('/api/v1/reviews', reviewsRoutes);
 
 // custom middlewares
 app.use(notFoundMiddleware);

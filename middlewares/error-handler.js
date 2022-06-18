@@ -10,21 +10,13 @@ const errorHandlerMiddleware = async (err, req, res, next) => {
     }
 
     if (err.name === 'ValidationError') {
-        // for (let i = 0; i < err.errors.length; i++) {
-        //     console.log(err.errors[i]);
-        //     if (err.errors[i].kind === 'required') {
-        //         customError.message = Object.values(err.errors).map(field => `${field.path} field is required`);
-        //     } else {
-        //         customError.message = Object.values(err.errors).map(field => field.message);
-        //     }
-        // }
-        // if ((Object.values(err.errors)).kind === 'required') {
-        //     customError.message = Object.values(err.errors).map(field => `${field.path} field is required`);
-        // } else {
-        //     customError.message = Object.values(err.errors).map(field => field.message);
-        // }
-        customError.message = Object.values(err.errors).map(field => field.message);
         customError.statusCode = 400;
+        
+        if (Object.values(err.errors)[0].kind === 'required') {
+            customError.message = 'All fields must be provided';
+        } else {
+            customError.message = Object.values(err.errors).map(field => field.message);
+        }
     }
 
     if (err.name === 'CastError') {
@@ -34,6 +26,7 @@ const errorHandlerMiddleware = async (err, req, res, next) => {
 
     console.log(err);
     return res.status(customError.statusCode).json({message: customError.message});
+    // return res.status(customError.statusCode).json(err);
 };
 
 module.exports = errorHandlerMiddleware;

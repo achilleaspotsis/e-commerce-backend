@@ -1,6 +1,6 @@
 const path = require('path');
-const { NotFoundError, BadRequestError } = require('../errors');
 const Product = require('../models/Product');
+const { NotFoundError, BadRequestError } = require('../errors');
 
 const createProduct = async (req, res) => {
     req.body.user = req.user.id;
@@ -16,14 +16,15 @@ const createProduct = async (req, res) => {
 const getAllProducts = async (req, res) => {
     const products = await Product.find({});
 
-    if (!products) {
-        return res.status(200).json({message: 'There are no products yet'})
+    let hits = products.length;
+    let responseMsg = 'Products fetched successfully';
+
+    if (hits === 0) {
+        responseMsg = 'There are no products available yet';
     }
 
-    let hits = products.length;
-
     res.status(200).json({
-        message: 'Products fetched successfully',
+        message: responseMsg,
         hits,
         products
     });
@@ -61,7 +62,7 @@ const updateProduct = async (req, res) => {
 const deleteProduct = async (req, res) => {
     await Product.deleteOne({_id: req.params.id});
 
-    res.status(200).json('Product deleted successfully');
+    res.status(200).json({message: 'Product deleted successfully'});
 };
 
 const uploadImage = async (req, res) => {

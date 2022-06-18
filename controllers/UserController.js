@@ -1,18 +1,21 @@
 const User = require("../models/User");
 const { NotFoundError, BadRequestError, UnauthenticatedError } = require("../errors");
-const { specificUserData, createJWT } = require("../utils");
-const checkPermissions = require("../utils/check-permissions");
+const { specificUserData, createJWT, checkPermissions } = require("../utils");
 
 const getAllUsers = async (req, res) => {
     const users = await User.find({role: 'user'}).select('-password');
 
-    if (!users) {
-        return res.status(200).json({message: 'There are no users available'})
+    let hits = users.length;
+    let responseMsg = 'Users fetched successfully';
+
+    if (hits === 0) {
+        responseMsg = 'There are no users available yet';
     }
 
     res.status(200).json({
-        users,
-        message: 'Users fetched successfully'
+        message: responseMsg,
+        hits,
+        users
     });
 };
 
@@ -26,8 +29,8 @@ const getSingleUser = async (req, res) => {
     checkPermissions(req.user, user);
 
     res.status(200).json({
-        user,
-        message: `${user.name} fetched successfully`
+        message: `${user.name} fetched successfully`,
+        user
     });
 };
 
@@ -61,9 +64,9 @@ const updateUser = async (req, res) => {
     const token = createJWT(userDataForResponse);
     
     res.status(200).json({
-        token,
+        message: 'User updated successfully',
         user: userDataForResponse,
-        message: 'User updated successfully'
+        token,
     });
 };
 

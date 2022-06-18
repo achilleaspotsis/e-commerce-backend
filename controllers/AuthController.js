@@ -38,9 +38,9 @@ const login = async (req, res) => {
     const token = createJWT(userDataForResponse);
 
     res.status(200).json({
-        token,
+        message: 'You have successfully logged in',
         user: userDataForResponse,
-        message: 'You have successfully logged in'
+        token,
     });
 };
 
