@@ -55,6 +55,10 @@ const ProductSchema = new Schema(
             type: Number,
             default: 0
         },
+        numOfReviews: {
+            type: Number,
+            default: 0
+        },
         user: {
             type: Schema.Types.ObjectId,
             ref: 'User',

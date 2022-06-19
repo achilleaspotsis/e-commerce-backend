@@ -37,4 +37,39 @@ const ReviewSchema = new Schema(
 // 1st implementation for checking a user to have only one review per product
 ReviewSchema.index({ user: 1, product: 1 }, { unique: true });
 
+ReviewSchema.statics.calcAvgRatingAndNumOfReviews = async function(productId) {
+    const result = await this.aggregate([
+        {
+            $match: {
+                product: productId
+            }
+        },
+        {
+            $group: {
+                _id: null,
+                averageRating: { $avg: '$rating' },
+                numOfReviews: { $sum: 1 }
+            }
+        }
+    ]);
+    
+    try {
+        await this.model('Product').findByIdAndUpdate(productId, {
+            // averageRating: Math.round(result[0]?.averageRating || 0),
+            averageRating: result[0]?.averageRating || 0,
+            numOfReviews: result[0]?.numOfReviews || 0
+        });
+    } catch (err) {
+        console.log(err);
+    }
+};
+
+ReviewSchema.post('save', async function() {
+    await this.constructor.calcAvgRatingAndNumOfReviews(this.product);
+});
+
+ReviewSchema.post('remove', async function() {
+    await this.constructor.calcAvgRatingAndNumOfReviews(this.product);
+});
+
 module.exports = model('Review', ReviewSchema);
