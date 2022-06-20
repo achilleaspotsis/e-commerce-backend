@@ -46,7 +46,7 @@ ReviewSchema.statics.calcAvgRatingAndNumOfReviews = async function(productId) {
         },
         {
             $group: {
-                _id: null,
+                _id: '$product',
                 averageRating: { $avg: '$rating' },
                 numOfReviews: { $sum: 1 }
             }

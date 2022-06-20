@@ -12,7 +12,11 @@ const cookieParser = require('cookie-parser');
 const morgan = require('morgan');
 
 // security packages
+const rateLimiter = require('express-rate-limit');
+const helmet = require('helmet');
 const cors = require('cors');
+const xss = require('xss-clean');
+const mongoSanitize = require('express-mongo-sanitize');
 
 // --> end of packages
 
@@ -24,6 +28,7 @@ const authRoutes = require('./routes/auth');
 const usersRoutes = require('./routes/users');
 const productRoutes = require('./routes/products');
 const reviewsRoutes = require('./routes/reviews');
+const ordersRoutes = require('./routes/orders');
 
 // middlewares
 const notFoundMiddleware = require('./middlewares/not-found');
@@ -41,16 +46,19 @@ app.use(fileUpload({
 app.use(morgan('tiny'));
 
 // security-middlewares
+app.set('trust proxy', 1);
+app.use(rateLimiter({
+    windowMs: 15 * 60 * 1000,
+    max: 60
+}));
+app.use(helmet());
 app.use(cors({
     origin: 'http://localhost:4200',
     // allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true
 }));
-
-
-// using this middleware now we can access the cookies with req.cookies
-// if we use the signed flag we access the cookies with req.signedCookies
-// app.use(cookieParser(process.env.JWT_SECRET));
+app.use(xss());
+app.use(mongoSanitize());
 
 app.get('/', (req, res) => {
     res.status(200).send('Welcome to the e-commerce-api');
@@ -66,6 +74,8 @@ app.use('/api/v1/users', authenticateUser, usersRoutes);
 app.use('/api/v1/products', productRoutes);
 
 app.use('/api/v1/reviews', reviewsRoutes);
+
+app.use('/api/v1/orders', authenticateUser, ordersRoutes);
 
 // custom middlewares
 app.use(notFoundMiddleware);
