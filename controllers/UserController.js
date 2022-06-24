@@ -47,8 +47,8 @@ const updateUser = async (req, res) => {
         throw new BadRequestError('Your fields cannot be empty, please provide values');
     }
     
-    if (name === req.user.name || email === req.user.email) {
-        throw new BadRequestError('You have to change your initial values');
+    if (name === req.user.name && email === req.user.email) {
+        throw new BadRequestError('You have to change at least one of your initial values');
     }
 
     const user = await User.findByIdAndUpdate(
